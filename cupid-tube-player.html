@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cupid Tube Player</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+
+  :root{
+    --bg:#ffd9e8; --bgDeep:#ffc2da; --panel:#ffb3d1; --panelDark:#ff98c1;
+    --accent:#ff2e86; --accentSoft:#ff6fae; --ink:#3a1020; --cream:#fff5fa;
+    --vinylA:#2a0d1a; --vinylB:#3d1327; --label:#ff4f9a;
+  }
+  [data-theme="blue"]{
+    --bg:#cfe4ff; --bgDeep:#b7d5ff; --panel:#a9cdff; --panelDark:#89b7ff;
+    --accent:#2e6bff; --accentSoft:#6fa1ff; --ink:#0f2340; --cream:#f2f8ff;
+    --vinylA:#0d1a2a; --vinylB:#132741; --label:#3a7bff;
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; height:100%; }
+  body{
+    font-family:'VT323',monospace;
+    background:repeating-linear-gradient(45deg,var(--bg) 0 14px,var(--bgDeep) 14px 28px);
+    display:flex; align-items:center; justify-content:center;
+    padding:24px 12px; min-height:100%;
+  }
+
+  .device{
+    width:100%; max-width:420px; background:var(--panel);
+    border:3px solid var(--ink); box-shadow:4px 4px 0 0 var(--ink);
+    padding:16px;
+  }
+
+  .titlebar{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+  .logo{ font-family:'Press Start 2P',monospace; font-size:11px; color:var(--ink); display:flex; gap:8px; align-items:center; }
+
+  .btn{
+    font-family:'Press Start 2P',monospace; background:var(--cream); color:var(--ink);
+    border:3px solid var(--ink); box-shadow:3px 3px 0 0 var(--ink); cursor:pointer;
+    transition:transform .04s, box-shadow .04s; user-select:none;
+  }
+  .btn:active{ transform:translate(3px,3px); box-shadow:0 0 0 0 var(--ink); }
+  .btn:focus-visible{ outline:3px dashed var(--ink); outline-offset:3px; }
+  .btn.accent{ background:var(--accent); color:var(--cream); }
+  .btn.label{ background:var(--label); color:var(--cream); }
+
+  /* input row */
+  .loadrow{ display:flex; gap:8px; margin-bottom:12px; }
+  .urlinput{
+    flex:1; min-width:0; font-family:'VT323',monospace; font-size:20px; color:var(--ink);
+    background:var(--cream); border:3px solid var(--ink); box-shadow:3px 3px 0 0 var(--ink);
+    padding:6px 10px;
+  }
+  .urlinput:focus{ outline:none; }
+
+  /* screen */
+  .screen{
+    position:relative; background:#000; border:3px solid var(--ink);
+    box-shadow:inset 0 0 0 3px var(--panelDark); aspect-ratio:16/9; margin-bottom:12px; overflow:hidden;
+  }
+  .screen iframe, .screen #ytplayer{ width:100%; height:100%; border:0; display:block; }
+  .screen .placeholder{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center;
+    color:var(--panelDark); font-size:20px; padding:16px; font-family:'VT323',monospace;
+  }
+
+  /* now playing: vinyl + title */
+  .nowrow{ display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+  .vinyl{
+    width:54px; height:54px; flex:0 0 54px; border-radius:50%; border:3px solid var(--ink);
+    background:repeating-radial-gradient(circle at 50% 50%,var(--vinylA) 0 2px,var(--vinylB) 2px 5px);
+    position:relative; box-shadow:3px 3px 0 0 rgba(0,0,0,.4);
+  }
+  .vinyl.spin{ animation:spin 3.4s linear infinite; }
+  .vinyl .lbl{
+    position:absolute; inset:34%; border-radius:50%; background:var(--label); border:2px solid var(--ink);
+    display:flex; align-items:center; justify-content:center; color:var(--cream);
+    font-family:'Press Start 2P',monospace; font-size:6px;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg);} }
+
+  .titlebox{ flex:1; min-width:0; overflow:hidden; white-space:nowrap;
+    background:var(--cream); border:3px solid var(--ink); box-shadow:3px 3px 0 0 var(--ink);
+    padding:6px 10px; height:34px; display:flex; align-items:center; }
+  .titlebox span{ display:inline-block; color:var(--ink); font-size:22px; line-height:1; }
+  .titlebox span.marq{ animation:marquee 9s linear infinite; }
+  @keyframes marquee{ 0%{transform:translateX(0);} 100%{transform:translateX(calc(-100% - 40px));} }
+
+  /* seek */
+  .seek{ position:relative; height:16px; background:var(--cream); border:3px solid var(--ink);
+    box-shadow:3px 3px 0 0 var(--ink); cursor:pointer; touch-action:none; }
+  .seek .fill{ position:absolute; left:0; top:0; bottom:0; width:0%; background:var(--accent); }
+  .seek .star{ position:absolute; top:50%; left:0%; transform:translate(-50%,-50%);
+    filter:drop-shadow(2px 2px 0 var(--ink)); pointer-events:none; }
+  .times{ display:flex; justify-content:space-between; color:var(--ink); font-size:18px; margin:6px 0 12px; }
+
+  .transport{ display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:14px; }
+
+  .volrow{ display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+  .volrow span{ color:var(--ink); font-size:18px; width:28px; }
+  input[type=range].vol{ -webkit-appearance:none; appearance:none; flex:1; height:10px;
+    border:3px solid var(--ink); background:#fff; box-shadow:3px 3px 0 0 var(--ink); cursor:pointer; }
+  input[type=range].vol::-webkit-slider-thumb{ -webkit-appearance:none; width:16px; height:20px; background:var(--ink); border:0; }
+  input[type=range].vol::-moz-range-thumb{ width:16px; height:20px; background:var(--ink); border:0; }
+
+  .status{ color:var(--ink); font-size:16px; opacity:.75; text-align:center; min-height:20px; }
+  .status.err{ color:var(--accent); opacity:1; }
+
+  @media (prefers-reduced-motion: reduce){
+    .vinyl.spin{ animation:none; } .titlebox span.marq{ animation:none; }
+  }
+</style>
+</head>
+<body>
+  <div class="device" id="device" data-theme="pink">
+    <div class="titlebar">
+      <div class="logo">♥ CUPID TUBE</div>
+      <button class="btn accent" id="themeBtn" style="font-size:8px;padding:7px 8px;" aria-label="Switch theme">PINK</button>
+    </div>
+
+    <div class="loadrow">
+      <input class="urlinput" id="urlInput" type="text" placeholder="paste a youtube link…" aria-label="YouTube link" />
+      <button class="btn label" id="loadBtn" style="font-size:10px;padding:0 12px;">LOAD</button>
+    </div>
+
+    <div class="screen">
+      <div id="ytplayer"></div>
+      <div class="placeholder" id="placeholder">paste a youtube video or playlist link above, then hit LOAD ♥</div>
+    </div>
+
+    <div class="nowrow">
+      <div class="vinyl" id="vinyl"><div class="lbl">♥</div></div>
+      <div class="titlebox"><span id="title">— nothing playing —</span></div>
+    </div>
+
+    <div class="seek" id="seek" role="slider" tabindex="0" aria-label="Seek" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0">
+      <div class="fill" id="fill"></div>
+      <div class="star" id="star" aria-hidden="true">
+        <svg width="24" height="24" viewBox="0 0 24 24" shape-rendering="crispEdges">
+          <path d="M12 2 L15 9 L22 9 L16.5 13.5 L18.5 21 L12 16.5 L5.5 21 L7.5 13.5 L2 9 L9 9 Z"
+            fill="var(--cream)" stroke="var(--ink)" stroke-width="1.5" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+    <div class="times"><span id="cur">0:00</span><span id="dur">0:00</span></div>
+
+    <div class="transport">
+      <button class="btn" id="prevBtn" style="font-size:12px;padding:10px 12px;" aria-label="Previous">◄◄</button>
+      <button class="btn accent" id="playBtn" style="font-size:14px;padding:12px 18px;" aria-label="Play">►</button>
+      <button class="btn" id="nextBtn" style="font-size:12px;padding:10px 12px;" aria-label="Next">►►</button>
+    </div>
+
+    <div class="volrow">
+      <span>VOL</span>
+      <input class="vol" id="vol" type="range" min="0" max="100" step="1" value="80" aria-label="Volume" />
+    </div>
+
+    <div class="status" id="status">plays via youtube · video or playlist links both work</div>
+  </div>
+
+<script>
+  // ---------- pixel UI wiring ----------
+  const $ = (id) => document.getElementById(id);
+  const device = $('device');
+  let theme = 'pink';
+  $('themeBtn').addEventListener('click', () => {
+    theme = theme === 'pink' ? 'blue' : 'pink';
+    device.setAttribute('data-theme', theme);
+    $('themeBtn').textContent = theme.toUpperCase();
+  });
+
+  // ---------- YouTube IFrame API ----------
+  let player = null;
+  let apiReady = false;
+  let pendingInput = null;
+  let dragging = false;
+  let lastTitle = '';
+
+  // load the API script
+  (function(){
+    const tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    document.head.appendChild(tag);
+  })();
+
+  window.onYouTubeIframeAPIReady = function(){
+    player = new YT.Player('ytplayer', {
+      width: '100%', height: '100%',
+      playerVars: {
+        controls: 0, modestbranding: 1, rel: 0, playsinline: 1, iv_load_policy: 3
+      },
+      events: {
+        onReady: () => {
+          apiReady = true;
+          player.setVolume(parseInt($('vol').value, 10));
+          if (pendingInput) { loadInput(pendingInput); pendingInput = null; }
+        },
+        onStateChange: onState,
+        onError: onError
+      }
+    });
+  };
+
+  function parseYouTube(input){
+    input = (input || '').trim();
+    let video = null, list = null;
+    try {
+      const u = new URL(input);
+      if (u.hostname.includes('youtu.be')) video = u.pathname.slice(1) || null;
+      const v = u.searchParams.get('v'); if (v) video = v;
+      list = u.searchParams.get('list');
+      const m = u.pathname.match(/\/(embed|shorts|v)\/([^/?#]+)/);
+      if (m) video = m[2];
+    } catch(e){
+      if (/^(PL|UU|OL|RD|LL|FL)/.test(input)) list = input;
+      else if (input) video = input;
+    }
+    return { video, list };
+  }
+
+  function loadInput(input){
+    const { video, list } = parseYouTube(input);
+    if (!video && !list){ setStatus('couldn’t read that link — paste a youtube video or playlist url', true); return; }
+    $('placeholder').style.display = 'none';
+    setStatus('loading…');
+    if (list){
+      player.loadPlaylist({ list: list, listType: 'playlist', index: 0, startSeconds: 0 });
+    } else {
+      player.loadVideoById(video);
+    }
+  }
+
+  function submit(){
+    const val = $('urlInput').value;
+    if (!val.trim()) return;
+    if (!apiReady){ pendingInput = val; setStatus('warming up the player…'); return; }
+    loadInput(val);
+  }
+  $('loadBtn').addEventListener('click', submit);
+  $('urlInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') submit(); });
+
+  // transport
+  $('playBtn').addEventListener('click', () => {
+    if (!player || !player.getPlayerState) return;
+    const st = player.getPlayerState();
+    if (st === 1) player.pauseVideo(); else player.playVideo();
+  });
+  $('nextBtn').addEventListener('click', () => player && player.nextVideo && player.nextVideo());
+  $('prevBtn').addEventListener('click', () => {
+    if (!player) return;
+    if (player.getCurrentTime && player.getCurrentTime() > 3){ player.seekTo(0, true); return; }
+    player.previousVideo && player.previousVideo();
+  });
+  $('vol').addEventListener('input', (e) => player && player.setVolume && player.setVolume(parseInt(e.target.value, 10)));
+
+  function onState(e){
+    const playing = e.data === 1;
+    $('vinyl').classList.toggle('spin', playing);
+    $('playBtn').textContent = playing ? '❚❚' : '►';
+    if (e.data === 1 || e.data === 5) setStatus('');
+    updateTitle();
+  }
+
+  function onError(e){
+    const map = {
+      2:'that link looks malformed',
+      5:'this video can’t play in an embedded player',
+      100:'video not found — it may be private or removed',
+      101:'the owner disabled embedding for this one',
+      150:'the owner disabled embedding for this one'
+    };
+    setStatus(map[e.data] || 'youtube couldn’t play that', true);
+  }
+
+  function setStatus(msg, isErr){
+    const s = $('status');
+    s.textContent = msg;
+    s.classList.toggle('err', !!isErr);
+  }
+
+  function updateTitle(){
+    if (!player || !player.getVideoData) return;
+    const d = player.getVideoData();
+    const title = (d && d.title) ? d.title : '';
+    if (title && title !== lastTitle){
+      lastTitle = title;
+      const span = $('title');
+      span.textContent = title;
+      // measure overflow → marquee
+      span.classList.remove('marq');
+      const box = span.parentElement;
+      if (span.scrollWidth > box.clientWidth + 4){
+        span.textContent = title;
+        span.classList.add('marq');
+      }
+    }
+  }
+
+  // ---------- seek (draggable star) ----------
+  const seek = $('seek');
+  function seekFromClientX(clientX){
+    if (!player || !player.getDuration) return;
+    const dur = player.getDuration() || 0;
+    if (!dur) return;
+    const rect = seek.getBoundingClientRect();
+    const frac = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
+    player.seekTo(frac * dur, true);
+    paintSeek(frac, frac * dur, dur);
+  }
+  seek.addEventListener('pointerdown', (e) => {
+    if (!player || !player.getDuration || !player.getDuration()) return;
+    seek.setPointerCapture(e.pointerId);
+    dragging = true;
+    seekFromClientX(e.clientX);
+  });
+  seek.addEventListener('pointermove', (e) => { if (dragging) seekFromClientX(e.clientX); });
+  seek.addEventListener('pointerup', (e) => {
+    if (!dragging) return;
+    dragging = false;
+    try { seek.releasePointerCapture(e.pointerId); } catch(_){}
+  });
+  seek.addEventListener('keydown', (e) => {
+    if (!player || !player.getDuration) return;
+    const dur = player.getDuration() || 0, cur = player.getCurrentTime() || 0;
+    if (e.key === 'ArrowRight') player.seekTo(Math.min(dur, cur + 5), true);
+    if (e.key === 'ArrowLeft')  player.seekTo(Math.max(0,   cur - 5), true);
+  });
+
+  function fmt(s){
+    if (!s || isNaN(s) || !isFinite(s)) return '0:00';
+    const m = Math.floor(s/60), sec = Math.floor(s%60);
+    return m + ':' + String(sec).padStart(2,'0');
+  }
+  function paintSeek(frac, cur, dur){
+    $('fill').style.width = (frac*100) + '%';
+    $('star').style.left = (frac*100) + '%';
+    $('cur').textContent = fmt(cur);
+    $('dur').textContent = fmt(dur);
+    seek.setAttribute('aria-valuemax', Math.floor(dur||0));
+    seek.setAttribute('aria-valuenow', Math.floor(cur||0));
+  }
+
+  // ---------- poll loop ----------
+  setInterval(() => {
+    if (!player || !player.getDuration) return;
+    updateTitle();
+    if (dragging) return;
+    const dur = player.getDuration() || 0;
+    const cur = player.getCurrentTime() || 0;
+    paintSeek(dur ? cur/dur : 0, cur, dur);
+  }, 250);
+</script>
+</body>
+</html>
