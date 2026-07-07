@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<!-- Required so YouTube's embedded player receives a valid Referer header (avoids Error 153) -->
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <title>ZombieSparkles Tube</title>
 <style>
@@ -11,43 +10,34 @@
 
   :root{
     --panel:#ffb3d1; --panelDark:#ff98c1;
-    --accent:#ff2e86; --accentSoft:#ff6fae; --ink:#3a1020; --cream:#fff5fa;
-    --vinylA:#2a0d1a; --vinylB:#3d1327; --label:#ff4f9a;
+    --accent:#ff2e86; --accentSoft:#ff6fae; --ink:#3a1020; --cream:#fff5fa; --label:#ff4f9a;
   }
   [data-theme="blue"]{
     --panel:#a9cdff; --panelDark:#89b7ff;
-    --accent:#2e6bff; --accentSoft:#6fa1ff; --ink:#0f2340; --cream:#f2f8ff;
-    --vinylA:#0d1a2a; --vinylB:#132741; --label:#3a7bff;
+    --accent:#2e6bff; --accentSoft:#6fa1ff; --ink:#0f2340; --cream:#f2f8ff; --label:#3a7bff;
   }
 
   *{ box-sizing:border-box; }
   html,body{ margin:0; min-height:100%; }
-  body{
-    font-family:'VT323',monospace;
-    display:flex; align-items:center; justify-content:center;
-    padding:24px 12px; min-height:100vh; position:relative;
-  }
+  body{ font-family:'VT323',monospace; display:flex; align-items:center; justify-content:center;
+    padding:24px 12px; min-height:100vh; position:relative; }
 
-  /* ---------- fantasy scene background ---------- */
-  .scene{ position:fixed; inset:0; width:100%; height:100%; z-index:-1; pointer-events:none; }
-  .scene svg{ width:100%; height:100%; display:block; }
+  .scene{ position:fixed; inset:0; z-index:-1;
+    background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUAAAAC0CAIAAABqhmJGAAAQb0lEQVR4nO2dfYwWxR3H5+DBGDSS0mKuwTNor+aMb/jWKF4jNSatjYV4tsE2bUOANmdDFK3yR62xDRYblHIYq9dSrOkftSSFhpcEG03F9ECsaUWKzcVcDuqBXsXyh4Er5dD2jzmGYV9mZ2fn5Te7308IeW6f3dl5Zubz/GZmZ/dp+9Iz7zDQeLb3doTOgnNu6x8JnQX7tEJnAISnCfYy6WPWyWQI3HQaYq9M4iNH7fOk0BkAIWmgvWm293bEWw4QuLnE22pdEKnGELihxNhYPRCdxhC4icTVRv0Tkca1ncRSV0DU8xYViaVpBmd7bwf9dtJWp+vAZk2TfiVZBPaWhXjzaE1tfRQ6D1XZuGRWlcNFm77zVweqZwbUjO29HZQbRlvPuv2h82BORXUzoVxbFXFRXA2BbKuIdRJr45JZjpqju5RBvJBtElEK7KE0yVaYMfX7RJ6hWYDxCeytHGlWGAAydC8jUfCH54Hs+Ad4ZuOSWdQaQ+usFqEg/PzCC0NnIYONS2Z9/bm4L7bRLNgYIeULo9OFfn7hhWhkgD7UWml4gaNQl34OQTNpu+vX/wx17uisiK4jHV0JxwWF9hBM4KjbFoWaUxN18UZHwPYQRuDaNC+aJtemeOMiSGMIIHAtmxcRk2tZthHhvxn4FrjeLSysxvUu24jw2Qy8zkLXvoUF/IC1L9uI8FkX4S8j1YwgIsFeanirEX8CN6eRef6kzSnYuPBTL21Lfveeh9OsW9Du4Syk+M6GUT8namDZRoTrZoAutCv8eAV7Gw4Edohru2AvfVzXkQ+B0c4AcAQisFvw5QWc4lxgtGBHoGBjwWlNuXoiB5qXQBSFt3lp0BycCAx7M4HJwDqWu9DrFrTD3kJQRMAWNgVGu9QHZQWsYE1gtMiyoMRAdewIjLZoBsqtCewcHnOXOK4DB8bYYafNAsSCBYERRiqCAgTG0P1lBgDqwU0XT73p4qn8tfUriFVvJ0T0sEXZql14/XmMMdEyQFzYMhlj4Fh57vUPGUbC0WJrxQS60NFzbFz17jlTfOUDlIc7XCUaIwLHSl9P++yOqbM7CrrQx8Yn/gGyVAnFiMDx0ddjUt/cYQRkmqxb0G4WhxGBI8PMXgFCMVnM4jAicDRUVFeAUEwWg/vVWp9oHa1yyp3DY7iSUZ2dw2OJinhkXqfTMx4bh8N0ESYv3zik3hMRmBauvZWBw/RZdWen2mELY2BciqwIL8BH5nX6tBekeblnbugsZLDqTlWrqCrw5jferZhCw+H2Fl4NcgQuMgm4vdE5bGcWGkHYjJ3DYzrXcj0gm7xzeAwVSo08hy0IzIMwqrws3N7QuUhybHyiO9AojeXASzMIsxyHW9OmTbN1AsxI60PcjdkdU/eMjLFT+ax3taaNfbln7hc27QiQlSLSttrpQu8YPsZfNOpr25iw415N5OzxakXNBuehW2c8dOsMeUvboy++byv1uRefI17X+zvbDFkA4vYKeBxOU4P65dVx4oEv5+1AMwgLfvLSYWb3OvCO4WPCYdFYa1DTFYk6cIm+dAL5QzmqYke996irQ4aHYpsRWCCHYkETTNZsHLGEX0FeHM7DoK71vSqVuDpZRfjlEA/CzJHALMfhQqKWXKcJ8smCZTfPKNyTFH2vHOYvzKqVJoX2cog77GoppZjWKlXlkc55qtUVRcGJzl7G2LKbZ3CHzaoVuMNVBE5jUOX0TU6om3A1QYzqphHRWOBIZl6Y1hPnyc55+mv6h1AOwv4E1iGvtkiZnBdvFfbWQ12ZtMYyBtapv/uME89MtpS9HLIO07obKe9LN+GMrWkM/XRKdZIT1M9eJnWqM9G30QCniUcHrQgsE8UoS6cx1VJgjjoO08Qg/HJoBmG6AsuQkrlUBKixvZy4HDa2l0PQYVpd6DwSzlQfBZVNx6zbVnt7QXDiiMCR0hCBYwnCFcMvh1oQxlMpAYgYCAwagZXwyyjdLczvD4PAoP7YspcT3GH51s5Wa1Jb2NyA2EETck3mMoSBA2MMXWinlL2JJ0bof8bPPfVV62l6C8KZz1EYODDG7WWxXEaKlz0jFB981Sj+svT34nX34dV5u0265K7CpD6e9ln+wsPaXtlboWsaCAzM2TMypmhb9WPgwFj3rIkn/omNhTLr75wZbNWJt1qT0Yt2xe6R4zd0nF3XIMw7z41qP63Jk3aPHGeM3dBxtthY6hEf+jvzExUWLyKwW4TDLMIHcSjgn4g3sgYif3BZ5oo7G5QnBPZHPTQWs1aNtTdBqXKwXmgN6v+EIlFne0bG6M/cpuHZhr1qrlnb4/mMiMA+SA+c8hwmEp8VXzFQNw9u7zVre/527yZvJ4XA/khrnCZ4NztP3Xp7u2zXANs1wF8/ufCpsJkpRWsKOtF++euh44yxa2cWa8z8miyryzMpg3bClIVwxZrTnedr1vb8/T5PQRgROAxpQ2SE3rJUmjKXOiQz3qrzBtLI9ootfhyGwBQRCsmB2mDqq9Qh8NaMtL1iuweHITBpZKnUvW6zQyBt7LQmTcatJHHwxuh/dXaTK7TwENR+KdLFddkTdyj2v2JNz1sP/MFljhCBAWCsb063zs0MCdT2in2cOoy5RQBM0LG37J4GQGAAIqY1pW1y6DwAEAdClksen1fqwMueuOPtB7c4yBEiMAAlKWtvlaMKgcAAlKCKhy4cbk1GDxo0Hs210NVlsa4bIjAAunzmp1VDaPUUEkBgALQ4vuJeK+nYdRgLOUBTeGX7vZd2tRsffvbDa98av+jS/Y+l39JfBPLW+EXGGcgEAoOac+n+x/oHR0PnwhUQGNQQOU7W2F7GWGsKlrODGHhp2z3pjbfe/qR43Tm0MvGurO7gkSHGGGPZXWjNtdDVZbGuGyIwoE6muvJbvcqR7Sl16wkEBnRRqCvDI21vV/uJDa+eteBGeaM3e+95bql47fOpWhAYEEW2N9PDrumd8p8nNrzK/z9rwY2e7Q0IBAYUEfYqJORvcY0XvblfbD+x4VV21UUu7E0Ps4PTamEpByDDrLdXspK938EjQ6tGkgsUF725f3mH9dyx/sFR9Xi7EOu6RRmB9+1eefkNPwidC2AHLm0C/fiZtldsX97xkWYiET8XOnQGdNm3e2XmnzA5atL29g+OVrdXvKvvcKRQFzjhrXoHyEycF7ZkzCpX7JT6ZPDIUN6V5FBxm6LAhdIWHgiTqZGpLkdcBGJWw6/Yp95BuDWFxizWGwOPWkxNmHx19w8tJgvM2LppaeE+ZeeHdOwVe9Jx2LpuISOwXWkLTwGZgyDbm4iuiQu5+uFX316xPx2H7RJAYA/eqs8Lk73B7c3TUmxPmKymrL3iKIXDZs+Flqn5SqxQ0mYCk/2gtldm8MiQpsNm9lY/liwOBSYlbSboYLtGf0ZKx+HqBsqLpeuBZYHpS5sHwrJdtm5aWnYxY+H+vA9s3EGd6OWeWrCRZNdA1/TOxETasrydK5CY0vtKT6X+th2B4/U2DUxuJqXG4cakJ+T5FmONzQWuk7SZoINdhbjuBErHXs8Ya1xOYKfSHnx/9ILziS7KQVgmTpVJYCv2ap5UfSFt66alZR0uFti1tHl/0pQZJusw8x/mbaZreqe36F2obt+c7sQwOHtUfOZGrqVIWXFzlXxHpBmtmedkP6Rn2x9XGCeqJiFt4W7ETWaM3f7FhwPmhByvu2o5Femb0+3tXDr2CuQZ+K2blvZ+6+f6J2rJP+J+6M1VpXOqjaa36gNpyiy+7GZetTxsToJz9YiFJuQzCBeSDsJq0lG97JVwWclCWjSlLUyQpsmiMD99+YNhcxKEa9993Eo6vV3tjLW7uIRjhr7DCXtL3ZshHH7txfuvv2W15lH2F3JYl7bwLARlfm/f6aaslrn389PF6/4/H3GYJ7+UDVwceTTIe7xENNb5OGaxN7F/2fGwHYH9SFt4doImM0nmTJPrJK0VEg5oauxh+bEYQi9TTll5xlzgsNJmQjws/2f848SW+275lHi95k8f+MmGfFIZ6xmoOHqUH8se/DqtjIfJsHRTkZFrsJzABKXNg7jMHG/Shjqp2egx88dQ5Pv+a0/34dWMsYEZ3898V65BLYEj8jYT4n3selNq9Fj4O0b9g6NssK/eGotP1314dZ7DglyBY5c2k7Bh+eTH//N8RiJojh6zfsrojD0F1R/vGgs8FO/45P15O5whcC2lzQNh2T86o0dHK5aCUP0aMmfuv3/GcjSedPD9UfHPOKNRgxKggOaKpcT+nL37qKz6SKM/41X49cQ1TkDxqZQBcRqWl908Q/7zx1voNrsgGDy7Q6ib5/CVl4cP2pqzAExjio47PLvn9K8ft33zRwurZrDu2JL5o/MXW0mHLPNPrjc7sNSKJSYFqzknj5qd0b/YCofNLpJtbi1miMCAAh5WLCXwH7EzV6RUub49/+T6za3FEBgY8si8ibZep7GAEHtX61x5u61Jb7uLQOafXA+BY0X4wwIpVCdvZRLqcsguI4HAsVJXf8KSaa+gf3CUj7opzI1xIDCIFeMZrDyEvYplJLta5845eZT3tCloDIEjw8PIU+6cC2of8Lm9OstIuMPs1IA5rMa4jFQMLiNpYnwZiZW877dreqeL8Fs4Ga64fBVKYxI/TQiAxRVLBujYy6T4nB4q7903xP9Zz5sadKFDEnwmmQ579w0tOq/92Q8LVrNye62HX4t47ldD4JA0XFqOHLXUDrvoOXPs/oYT86gxBAa0WHReO2MsofGEuoQDbybiu8mdyRDYH4dGAzx/wyvZz+oxgWt8mtjUTeAuIGMSC4DSmPXkXcxyQWAAUgE/n+pz4HY1RhcagHJYmUizNTxGBAaAMb0g7GIavGJAhsAATKB22N1FLFZhHQi60LHyvduuTG98evte/zmpE8EvYskO6/SuIXCswFV3ELmIpTNOhsDgDDIDO8P3RVAUJkNgcBrYS5x0BxsCB4OgLUFO/c7BDy68wN4arsbAZYbAwUjbwpVOiF3v6Lfthd2MsXcOfsAYg8YGQGBC1NvVQhCKDYDA0SBH5nqozsOvDEJxWSBwNBRKmzeoLpWIN9L2ChCK9YHA9YGOnNVBKNYEAvvjvQP7Q2ehmBV3z09sefiZzboHa+umCL8yRDSm3COAwOAMSujqi1D+8K8P+TVBjSEw8I1m+JXx6Y/sbd5bdEyGwMArBvYKXGusUNdzTvSBwCAyrPeo9b3NPDCsxhAYWGBi6uv1gmnwKuFXxoo5xt66yIwxEDgAvd+ex1/0/2ZL2UME+seakT6j4qR86mvFdaoEbdkrMAvFtrzNS9azyfhtpGJs/TbSa8PFCy2iZsV1qghsXWCBjjOOvM3Dm8aIwLUlM4Qy96E7E3f2sqJOrGd15ZN60BgCB8N1r9ggNUfOO7VXkOhRB/E2gYd+NQQORpBIqIZglkpBQdpM3AVkCFxz/M9+JfATfqPAxeQ5BI4JAxvVOxjMh5cC9qYpq7G6WwGBY8K6ZnkJJr4pYu9aE0QxPC41EIDAIAMrxiL86lBx3I5fZgAgYhCBabH4G7enN67/7Tb/OakIwq8fILA/jv7rUOE+a9f8wkNOXAN7vYEuNAARA4GBZRB+fYIuNFCx+O7vJrasf+aXiv1hr2cgMFCh1hUE5/9cDbnyeBJERQAAAABJRU5ErkJggg==) center center / cover no-repeat;
+    image-rendering:pixelated; image-rendering:crisp-edges; }
 
-  /* ---------- device shell ---------- */
-  .device{
-    width:100%; max-width:760px; background:var(--panel);
-    border:3px solid var(--ink); box-shadow:6px 6px 0 0 rgba(0,0,0,.35), 0 0 0 3px var(--ink);
-    padding:16px;
-  }
+  .stage{ position:relative; width:100%; max-width:760px; margin:auto; }
+
+  .device{ width:100%; background:var(--panel); border:3px solid var(--ink);
+    box-shadow:6px 6px 0 0 rgba(0,0,0,.35), 0 0 0 3px var(--ink); padding:16px; }
 
   .titlebar{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:14px; }
   .logo{ font-family:'Press Start 2P',monospace; font-size:clamp(9px,2.4vw,13px); color:var(--ink);
     display:flex; align-items:center; gap:8px; white-space:nowrap; overflow:hidden; }
 
-  .btn{
-    font-family:'Press Start 2P',monospace; background:var(--cream); color:var(--ink);
+  .btn{ font-family:'Press Start 2P',monospace; background:var(--cream); color:var(--ink);
     border:3px solid var(--ink); box-shadow:3px 3px 0 0 var(--ink); cursor:pointer;
-    transition:transform .04s, box-shadow .04s; user-select:none;
-  }
+    transition:transform .04s, box-shadow .04s; user-select:none; }
   .btn:active{ transform:translate(3px,3px); box-shadow:0 0 0 0 var(--ink); }
   .btn:focus-visible{ outline:3px dashed var(--ink); outline-offset:3px; }
   .btn.accent{ background:var(--accent); color:var(--cream); }
@@ -59,7 +49,6 @@
     background:var(--cream); border:3px solid var(--ink); box-shadow:3px 3px 0 0 var(--ink); padding:6px 10px; }
   .urlinput:focus{ outline:none; }
 
-  /* two-column body: player + up-next */
   .layout{ display:grid; grid-template-columns:1fr; gap:14px; }
   @media(min-width:680px){ .layout{ grid-template-columns:minmax(0,1fr) 230px; align-items:start; } }
 
@@ -69,18 +58,17 @@
   .placeholder{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
     text-align:center; color:var(--panelDark); font-size:20px; padding:16px; }
 
-  /* ---------- turntable (centered below video) ---------- */
+  /* turntable */
   .turntable{ position:relative; width:210px; height:196px; margin:14px auto 12px;
     background:var(--panelDark); border:3px solid var(--ink); box-shadow:4px 4px 0 0 var(--ink); }
   .vinyl{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
-    width:160px; height:160px; border-radius:50%; border:3px solid var(--ink);
-    background:repeating-radial-gradient(circle at 50% 50%,var(--vinylA) 0 3px,var(--vinylB) 3px 7px);
-    box-shadow:0 0 0 6px var(--label), 0 0 0 9px var(--ink); }
+    width:168px; height:168px;
+    background:url(data:image/png;base64,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) center/contain no-repeat; image-rendering:pixelated; image-rendering:crisp-edges; }
   .vinyl.spin{ animation:spin 3.4s linear infinite; }
-  .vinyl .lbl{ position:absolute; inset:33%; border-radius:50%; background:var(--label); border:3px solid var(--ink);
+  .vinyl .lbl{ position:absolute; inset:36%; border-radius:50%; background:var(--label); border:2px solid var(--ink);
     display:flex; align-items:center; justify-content:center; color:var(--cream);
-    font-family:'Press Start 2P',monospace; font-size:11px; }
-  .vinyl .hole{ position:absolute; inset:47%; border-radius:50%; background:var(--cream); border:2px solid var(--ink); }
+    font-family:'Press Start 2P',monospace; font-size:10px; }
+  .vinyl .hole{ position:absolute; inset:47%; border-radius:50%; background:var(--cream); border:1px solid var(--ink); }
   @keyframes spin{ to{ transform:translate(-50%,-50%) rotate(360deg); } }
 
   .tonebase{ position:absolute; top:8px; right:10px; width:22px; height:22px; border-radius:50%;
@@ -92,14 +80,12 @@
   .tonearm .head{ position:absolute; bottom:-8px; left:-5px; width:17px; height:12px;
     background:var(--accent); border:3px solid var(--ink); }
 
-  /* title marquee */
   .titlebox{ overflow:hidden; white-space:nowrap; background:var(--cream); border:3px solid var(--ink);
     box-shadow:3px 3px 0 0 var(--ink); padding:6px 10px; margin-bottom:12px; height:34px; display:flex; align-items:center; }
   .titlebox span{ display:inline-block; color:var(--ink); font-size:22px; line-height:1; }
   .titlebox span.marq{ animation:marquee 9s linear infinite; }
   @keyframes marquee{ 0%{transform:translateX(0);} 100%{transform:translateX(calc(-100% - 40px));} }
 
-  /* seek */
   .seek{ position:relative; height:16px; background:var(--cream); border:3px solid var(--ink);
     box-shadow:3px 3px 0 0 var(--ink); cursor:pointer; touch-action:none; }
   .seek .fill{ position:absolute; left:0; top:0; bottom:0; width:0%; background:var(--accent); }
@@ -121,7 +107,6 @@
   .status{ color:var(--ink); font-size:16px; opacity:.75; text-align:center; min-height:20px; margin-top:8px; }
   .status.err{ color:var(--accent); opacity:1; }
 
-  /* ---------- up next sidebar ---------- */
   .sidebar{ background:var(--cream); border:3px solid var(--ink); box-shadow:4px 4px 0 0 var(--ink);
     display:flex; flex-direction:column; max-height:520px; }
   .sidebar h2{ font-family:'Press Start 2P',monospace; font-size:10px; color:var(--cream); background:var(--accent);
@@ -137,195 +122,94 @@
   .qrow .name{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .queue-empty{ padding:12px; color:var(--ink); opacity:.7; font-size:18px; }
 
+  /* ---------- framing dragons ---------- */
+  .dragon{ position:absolute; top:64px; width:132px; height:162px; z-index:5; pointer-events:none; }
+  .dragon.left{ left:-120px; }
+  .dragon.right{ right:-120px; transform:scaleX(-1); }
+  .dbody{ position:absolute; inset:0; z-index:2;
+    background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAE4AAABgCAYAAACzDERbAAAEi0lEQVR4nO2dP2pbQRCHRyFHUFyEIFIEE4xLVU4qV8akSGV8Ap8guHQhTA6hMpUxKYNREVQ5qkyKIEwQKYwwLhSdIUohRqxWu293Z+e9/aP9mtiWZCmffjOz+54kAxQKhUKhUCgUChFxe/ewCP0YkuX27mFRBBrQCUJ53AJbnL8sNCjnffd1S/6ZiHg5lazEAayLQkG6tPkIfEa9YQpgiaoE+aYuu8QB2E3U8/PPAAAwGvZJDrJMnCpNKEr++uDwbHFweOY8OLIUB2CWJ4MCbSVmWaoIlmyVsCqqyjhrcQBLeVRxIrLE7MUBLMuQ63ehwCIOAH507ldfv5vuWf3O534PKX1Eafi9St58Nl37PntxtmX64ttv+Pvh7ep7WZRMtssRV0RpNmy9OLksbXtcGQ4aqkq1vdPJP3GcSxGR7IcDlfZOp/LybBK3u3+0kSwxbS9f7bLd12jYb2UjDmApTyUQpXHKy0bcZDxYDTqdQAA+edn2OOxRVFGmA5zJJU6XJID11AHopYmlK19nNOy3bI4KJycOoLoUAcwTEcC/ZJMTZ+plviVqS/I9bjIetLgWuS4nbpJLHMB66lTSXNL29DghPYakEidKms+mVr2sLqIXh7LkTbdOWt29DYny6Iiq/ERxtkmzkYil6npiOhpxNg3eNnUyOoFif3MVF32p6nDpb6KgrLZctsuJ9k5nlTpRgMtkxOtu3QIYYDNtFAk+ZQrQUOJU2yNdqZmWGSGXICK1Doeq/SQii7CdnqqUuZQs9eVdSC2JsxGmQ+xj+C9XylD21y+fvAPDLs5HmgqVtKrDRXLq6loQB52quiSJqaOAsnrHQwB43Li8d3y8enL3Tm/CvyKzibSZaGrLxSYuBmlNEmwdF7sYEyzLEUraUBzl8BBXOfpM1yi2XNzLDuTkzVX15b3u4uTiLvxwoCDKms+mXtO0SbzFbdtQQIInDsBNVlPLDRNR9DiEO23Xf061l/luu7ynKrVUqZJcErfcOVQTxc5hmyjiiCQnjnoCmZuohgM3FzeHGz+jng6USW44IDZDwrRzAACg7hy8E+d77IybXz+/C1+3lde5PJl7309yPQ4J3euSFQcQVh7LcIitXE1Q+5pI8lP16XHivH+9v4rgnAOO9RiOaoiDoW5Ye1woea697uPlP+/7DDYcuHti04OCvce5DIq6DpnbQO1tCEviVC/4s5URqryve93Fda9LPnrtlTjTdks8k6W7LFXI4kRpJgmpS1JBKlUXabni3CBjleY6peU3zLnilDiKtCa2Yr7H1ihY9zgXaaNhvyW/C8b2ti6EEIYY71j37jwV89l0431WpsRRRKqEUQ6o+pRr5Q1dpOmefdsliw2mhLnK8xGn7XEc0jixuQ/fhu+CsseZpGH5NfFAXZ+UyXjQ4n49iwrjcNDtPeuURkkw8ZOlNz5w2ZYNcfKzJUvjFDYZD1pxnCV1Z63HmSLeZA9xIcQHwVeWaqyiYmAlbnf/aMEpyjIFa9eh9JpQf3agtkRR/kMcn3rfFLUcOt+GPz6R9AnpkLCL24a0FQqFZPgPCrX8c385+uUAAAAASUVORK5CYII=) center/contain no-repeat; image-rendering:pixelated; image-rendering:crisp-edges; }
+  .dwing{ position:absolute; left:-24px; top:-60px; width:122px; height:132px; z-index:1;
+    background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABOCAYAAACDtFBaAAADYUlEQVR4nO2cT0ocQRTGP0MOIB7BtYgHcJ3VLGROIOIBssjahWSZIwTxBOLCI+QAIWTtEcQbdBahhqJTXfX+VlVX+gNh6GGYnh/f9+pVzRuBTVkdtXjTh/vnKTy+ubtqcg9UfWh9A73ro+bFa3KCVFUdtL+4nfYXt9PL08vh2rfrxynzkuYyAxQ+fO75peeokB7un6fwJ7lHidSxiG82dgYAPP38fpQDs9vvAABvr++Ha18erxfvqUWkVW/y+dPXCQDOL88O1+aQckoBAv5CSrnq5PT48Lh7QAFOUIDEAQQsQ1rSyelx1QXBvEiHD+ypmjVIBGjuHgD49eP34TEHUnBcHJ+eZOqgGJK3arUHbEAp96TkFbW4VtWAlCx28+WUCiVIsqpxinWI49vre7YtsFDRQVw4wFhRKwKK3SARNWq9FuskoJu7q6O415BAkq5qFM1j6OmiYn7jeiSJDreBpNaiuA7Fsq5JxYhpnRRUo4EE7N1Epq1xEndV2+13YgfFsnATuQ/SOEkSzVKxprQDFkcjrEbRIm7WUfNe9didtBQSZ1XrackX7cUsIK1F4s2qNm4WLqKeIWmk2s1LIHk0kJ5RVB93aCHl1EMtMjkP0hyBejaQIYKapd7swCxAqh017zrk8sWhZdSoMfOKoSkgzcpWa6/GlbmDuJAoUWtZrF0ipoEkkWcdchtekMZN4yIPh7lOd3AgeZ5AauQ+/iKFlFKLWlRlPkgSN66LSnVI8u0MUHGAigpJGzVrd1WdMJNAmqt2zKoPcXLjpi3YIXrSE9AmU64USLmoLbnIow41GwPmQuLIMn5N56Q5caO6KKfzyzP20UfzQfISpNYNZHNAAA9SrJSLrPdlXQAC6HGjusiqDnUDCMhDahW1rgABdEhB3o1jd4AAWtxyLrKsQ10CApYhpaK25CILV3ULCKBB8lbXgIBy3Eou0qp7QEAaUmlVi+uQpiatAhBQhgSkp9e0jloNICAft9hFw2xWJZrPAXg3kKsDBPw7BxBDiou1RT+0SkCxclEL0kRutYDm9SjVGw3fKJZEgaTVqgEBdr8EWNLqAQG+v4AeAhDgB2kYQIAPpKEAAfaQhgME2EIaEhBgB2lYQIANpKEBAXpIwwMCdJD+C0DAuP9CbNOmTZs2bdok1h8cvLf4RUFWpQAAAABJRU5ErkJggg==) center/contain no-repeat; image-rendering:pixelated; image-rendering:crisp-edges;
+    transform-origin:83% 90%; animation:flap .9s ease-in-out infinite; }
+  @keyframes flap{ 0%,100%{ transform:rotate(9deg); } 50%{ transform:rotate(-15deg); } }
+  @media(max-width:1040px){ .dragon{ display:none; } }
+
   @media (prefers-reduced-motion: reduce){
-    .vinyl.spin,.titlebox span.marq,.floaty,.wing,.cloud{ animation:none !important; }
+    .vinyl.spin,.titlebox span.marq,.dwing{ animation:none !important; }
   }
 </style>
 </head>
 <body>
-  <!-- ===================== BACKGROUND SCENE ===================== -->
-  <div class="scene" aria-hidden="true">
-    <svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice" shape-rendering="crispEdges">
-      <defs>
-        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%"  stop-color="#6cc0ff"/>
-          <stop offset="45%" stop-color="#a9dcff"/>
-          <stop offset="74%" stop-color="#ffe9c9"/>
-          <stop offset="100%" stop-color="#ffd6ec"/>
-        </linearGradient>
-        <symbol id="cloud" viewBox="0 0 44 18">
-          <rect x="6" y="9" width="32" height="6" fill="#ffffff"/>
-          <rect x="2" y="11" width="40" height="5" fill="#ffffff"/>
-          <rect x="12" y="5" width="10" height="6" fill="#ffffff"/>
-          <rect x="20" y="7" width="12" height="5" fill="#ffffff"/>
-          <rect x="7" y="7" width="9" height="5" fill="#ffffff"/>
-          <rect x="2" y="15" width="40" height="2" fill="#e3d0f2"/>
-        </symbol>
-        <symbol id="pine" viewBox="0 0 12 18">
-          <rect x="5" y="13" width="2" height="5" fill="#6b4a2e"/>
-          <polygon points="6,1 11,8 1,8" fill="#3f9b5f"/>
-          <polygon points="6,5 12,14 0,14" fill="#348a52"/>
-        </symbol>
-      </defs>
+  <div class="scene" aria-hidden="true"></div>
 
-      <!-- sky + sun -->
-      <rect x="0" y="0" width="320" height="180" fill="url(#sky)"/>
-      <circle cx="264" cy="32" r="22" fill="#fff2b0" opacity="0.35"/>
-      <circle cx="264" cy="32" r="14" fill="#fff2b0"/>
-
-      <!-- drifting clouds -->
-      <use href="#cloud" x="18"  y="22" width="46" height="19" class="cloud c1"/>
-      <use href="#cloud" x="172" y="12" width="70" height="29" class="cloud c2"/>
-      <use href="#cloud" x="104" y="42" width="54" height="22" class="cloud c3"/>
-      <use href="#cloud" x="246" y="58" width="40" height="16" class="cloud c4"/>
-
-      <!-- mountains -->
-      <polygon points="0,122 42,84 72,104 112,76 152,108 192,82 232,110 282,86 320,116 320,180 0,180" fill="#cbe1f5"/>
-      <polygon points="106,80 112,76 120,86" fill="#ffffff"/>
-      <polygon points="186,86 192,82 200,90" fill="#ffffff"/>
-      <polygon points="276,90 282,86 290,94" fill="#ffffff"/>
-
-      <!-- back hill -->
-      <polygon points="0,132 60,124 140,134 210,120 320,130 320,180 0,180" fill="#74c684"/>
-
-      <!-- castle on the hill -->
-      <g transform="translate(146,92)">
-        <rect x="8"  y="16" width="9"  height="26" fill="#fbf3ff"/>
-        <rect x="14" y="20" width="24" height="22" fill="#fbf3ff"/>
-        <rect x="37" y="14" width="10" height="28" fill="#fbf3ff"/>
-        <polygon points="5,17 12,7 19,17"  fill="#ff9ec7"/>
-        <polygon points="11,21 26,10 41,21" fill="#ff9ec7"/>
-        <polygon points="36,15 42,4 49,15"  fill="#ff9ec7"/>
-        <rect x="11" y="25" width="3" height="4" fill="#6b567e"/>
-        <rect x="40" y="23" width="3" height="4" fill="#6b567e"/>
-        <rect x="23" y="27" width="5" height="5" fill="#6b567e"/>
-        <rect x="23" y="35" width="6" height="7" fill="#7a5a4a"/>
-      </g>
-
-      <!-- front hill -->
-      <polygon points="0,150 80,142 170,152 260,140 320,148 320,180 0,180" fill="#57a869"/>
-
-      <!-- pines -->
-      <use href="#pine" x="8"   y="118" width="14" height="21"/>
-      <use href="#pine" x="24"  y="122" width="12" height="18"/>
-      <use href="#pine" x="40"  y="120" width="13" height="20"/>
-      <use href="#pine" x="250" y="120" width="13" height="20"/>
-      <use href="#pine" x="266" y="123" width="11" height="17"/>
-      <use href="#pine" x="288" y="119" width="14" height="21"/>
-      <use href="#pine" x="60"  y="150" width="16" height="24"/>
-      <use href="#pine" x="236" y="150" width="16" height="24"/>
-
-      <!-- dragon 1 (teal) -->
-      <g transform="translate(50,34) scale(1.25)">
-        <g class="floaty">
-          <polygon points="2,11 8,10 12,12 8,13" fill="#3fa99b"/>
-          <polygon points="10,8 18,7 22,10 18,13 11,12" fill="#5fc9bb"/>
-          <polygon points="19,8 25,5 28,6 28,8 24,10 20,10" fill="#5fc9bb"/>
-          <rect x="13" y="12" width="2" height="3" fill="#3fa99b"/>
-          <rect x="17" y="12" width="2" height="3" fill="#3fa99b"/>
-          <circle cx="26" cy="7" r="0.9" fill="#20303a"/>
-          <g class="wing"><polygon points="12,8 6,1 18,5 15,9" fill="#3fa99b"/></g>
-        </g>
-      </g>
-
-      <!-- dragon 2 (lavender) -->
-      <g transform="translate(214,26) scale(1.0)">
-        <g class="floaty slow">
-          <polygon points="2,11 8,10 12,12 8,13" fill="#8f73cf"/>
-          <polygon points="10,8 18,7 22,10 18,13 11,12" fill="#ad93e3"/>
-          <polygon points="19,8 25,5 28,6 28,8 24,10 20,10" fill="#ad93e3"/>
-          <rect x="13" y="12" width="2" height="3" fill="#8f73cf"/>
-          <rect x="17" y="12" width="2" height="3" fill="#8f73cf"/>
-          <circle cx="26" cy="7" r="0.9" fill="#2a2340"/>
-          <g class="wing"><polygon points="12,8 6,1 18,5 15,9" fill="#8f73cf"/></g>
-        </g>
-      </g>
-    </svg>
-  </div>
-
-  <style>
-    /* scene animations (kept here so the SVG classes above resolve) */
-    .cloud{ transform-box:view-box; }
-    .c1{ animation:driftA 26s ease-in-out infinite; }
-    .c2{ animation:driftB 34s ease-in-out infinite; }
-    .c3{ animation:driftA 30s ease-in-out infinite; }
-    .c4{ animation:driftB 22s ease-in-out infinite; }
-    @keyframes driftA{ 0%,100%{transform:translateX(-6px);} 50%{transform:translateX(10px);} }
-    @keyframes driftB{ 0%,100%{transform:translateX(8px);} 50%{transform:translateX(-8px);} }
-    .floaty{ animation:bob 3.4s ease-in-out infinite; }
-    .floaty.slow{ animation-duration:4.3s; animation-delay:.6s; }
-    @keyframes bob{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-5px);} }
-    .wing{ transform-box:fill-box; transform-origin:72% 90%; animation:flap .85s ease-in-out infinite; }
-    @keyframes flap{ 0%,100%{transform:rotate(3deg);} 50%{transform:rotate(-22deg);} }
-  </style>
-
-  <!-- ===================== PLAYER ===================== -->
-  <div class="device" id="device" data-theme="pink">
-    <div class="titlebar">
-      <div class="logo">♥ ZombieSparkles Tube ♥</div>
-      <button class="btn accent" id="themeBtn" style="font-size:8px;padding:7px 8px;" aria-label="Switch theme">PINK</button>
-    </div>
-
-    <div class="loadrow">
-      <input class="urlinput" id="urlInput" type="text" placeholder="paste a youtube link…" aria-label="YouTube link" />
-      <button class="btn label" id="loadBtn" style="font-size:10px;padding:0 12px;">LOAD</button>
-    </div>
-
-    <div class="layout">
-      <!-- main player column -->
-      <div class="main">
-        <div class="screen">
-          <div id="ytplayer"></div>
-          <div class="placeholder" id="placeholder">paste a youtube video or playlist link above, then hit LOAD ♥</div>
-        </div>
-
-        <div class="turntable" id="turntable">
-          <div class="vinyl" id="vinyl"><div class="lbl">♥</div><div class="hole"></div></div>
-          <div class="tonebase"></div>
-          <div class="tonearm"><div class="head"></div></div>
-        </div>
-
-        <div class="titlebox"><span id="title">— nothing playing —</span></div>
-
-        <div class="seek" id="seek" role="slider" tabindex="0" aria-label="Seek" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0">
-          <div class="fill" id="fill"></div>
-          <div class="star" id="star" aria-hidden="true">
-            <svg width="24" height="24" viewBox="0 0 24 24" shape-rendering="crispEdges">
-              <path d="M12 2 L15 9 L22 9 L16.5 13.5 L18.5 21 L12 16.5 L5.5 21 L7.5 13.5 L2 9 L9 9 Z"
-                fill="var(--cream)" stroke="var(--ink)" stroke-width="1.5" stroke-linejoin="round"/>
-            </svg>
-          </div>
-        </div>
-        <div class="times"><span id="cur">0:00</span><span id="dur">0:00</span></div>
-
-        <div class="transport">
-          <button class="btn" id="shuffleBtn" aria-label="Shuffle" title="Shuffle">⇄</button>
-          <button class="btn" id="prevBtn" aria-label="Previous">◄◄</button>
-          <button class="btn accent play" id="playBtn" aria-label="Play">►</button>
-          <button class="btn" id="nextBtn" aria-label="Next">►►</button>
-          <button class="btn" id="repeatBtn" aria-label="Repeat" title="Repeat">⟳</button>
-        </div>
-
-        <div class="volrow">
-          <span>VOL</span>
-          <input class="vol" id="vol" type="range" min="0" max="100" step="1" value="80" aria-label="Volume" />
-        </div>
-
-        <div class="status" id="status">plays via youtube · video or playlist links both work</div>
+  <div class="stage">
+    <div class="device" id="device" data-theme="pink">
+      <div class="titlebar">
+        <div class="logo">&#9829; ZombieSparkles Tube &#9829;</div>
+        <button class="btn accent" id="themeBtn" style="font-size:8px;padding:7px 8px;" aria-label="Switch theme">PINK</button>
       </div>
 
-      <!-- up next sidebar -->
-      <aside class="sidebar">
-        <h2>UP NEXT</h2>
-        <div class="queue" id="queue">
-          <div class="queue-empty">load a playlist to see what's coming up ♥</div>
+      <div class="loadrow">
+        <input class="urlinput" id="urlInput" type="text" placeholder="paste a youtube link&#8230;" aria-label="YouTube link" />
+        <button class="btn label" id="loadBtn" style="font-size:10px;padding:0 12px;">LOAD</button>
+      </div>
+
+      <div class="layout">
+        <div class="main">
+          <div class="screen">
+            <div id="ytplayer"></div>
+            <div class="placeholder" id="placeholder">paste a youtube video or playlist link above, then hit LOAD &#9829;</div>
+          </div>
+
+          <div class="turntable" id="turntable">
+            <div class="vinyl" id="vinyl"><div class="lbl">&#9829;</div><div class="hole"></div></div>
+            <div class="tonebase"></div>
+            <div class="tonearm"><div class="head"></div></div>
+          </div>
+
+          <div class="titlebox"><span id="title">&#8212; nothing playing &#8212;</span></div>
+
+          <div class="seek" id="seek" role="slider" tabindex="0" aria-label="Seek" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0">
+            <div class="fill" id="fill"></div>
+            <div class="star" id="star" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" shape-rendering="crispEdges">
+                <path d="M12 2 L15 9 L22 9 L16.5 13.5 L18.5 21 L12 16.5 L5.5 21 L7.5 13.5 L2 9 L9 9 Z"
+                  fill="var(--cream)" stroke="var(--ink)" stroke-width="1.5" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+          <div class="times"><span id="cur">0:00</span><span id="dur">0:00</span></div>
+
+          <div class="transport">
+            <button class="btn" id="shuffleBtn" aria-label="Shuffle" title="Shuffle">&#8644;</button>
+            <button class="btn" id="prevBtn" aria-label="Previous">&#9668;&#9668;</button>
+            <button class="btn accent play" id="playBtn" aria-label="Play">&#9658;</button>
+            <button class="btn" id="nextBtn" aria-label="Next">&#9658;&#9658;</button>
+            <button class="btn" id="repeatBtn" aria-label="Repeat" title="Repeat">&#10227;</button>
+          </div>
+
+          <div class="volrow">
+            <span>VOL</span>
+            <input class="vol" id="vol" type="range" min="0" max="100" step="1" value="80" aria-label="Volume" />
+          </div>
+
+          <div class="status" id="status">plays via youtube &#183; video or playlist links both work</div>
         </div>
-      </aside>
+
+        <aside class="sidebar">
+          <h2>UP NEXT</h2>
+          <div class="queue" id="queue">
+            <div class="queue-empty">load a playlist to see what's coming up &#9829;</div>
+          </div>
+        </aside>
+      </div>
     </div>
+
+    <div class="dragon left"  aria-hidden="true"><div class="dwing"></div><div class="dbody"></div></div>
+    <div class="dragon right" aria-hidden="true"><div class="dwing"></div><div class="dbody"></div></div>
   </div>
 
 <script>
-  // ---------- pixel UI wiring ----------
   const $ = (id) => document.getElementById(id);
   const device = $('device');
   let theme = 'pink';
@@ -335,16 +219,10 @@
     $('themeBtn').textContent = theme.toUpperCase();
   });
 
-  // ---------- YouTube IFrame API ----------
-  let player = null;
-  let apiReady = false;
-  let pendingInput = null;
-  let dragging = false;
-  let lastTitle = '';
-  let shuffleOn = false;
-  let repeatMode = 0;            // 0 = off, 1 = all, 2 = one
-  const REPEAT_LABEL = ['⟳', '⟳', '⟳¹'];
-  const titleCache = {};         // video_id -> title (filled as tracks play)
+  let player = null, apiReady = false, pendingInput = null, dragging = false, lastTitle = '';
+  let shuffleOn = false, repeatMode = 0;
+  const REPEAT_LABEL = ['\u21bb', '\u21bb', '\u21bb\u00b9'];
+  const titleCache = {};
 
   (function(){
     const tag = document.createElement('script');
@@ -356,7 +234,6 @@
     const onWeb = location.protocol === 'http:' || location.protocol === 'https:';
     const vars = { controls: 0, modestbranding: 1, rel: 0, playsinline: 1, iv_load_policy: 3 };
     if (onWeb) vars.origin = location.origin;
-
     player = new YT.Player('ytplayer', {
       width: '100%', height: '100%',
       host: 'https://www.youtube-nocookie.com',
@@ -392,28 +269,23 @@
 
   function loadInput(input){
     const p = parseYouTube(input);
-    if (!p.video && !p.list){ setStatus('couldn’t read that link — paste a youtube video or playlist url', true); return; }
+    if (!p.video && !p.list){ setStatus('couldn\u2019t read that link \u2014 paste a youtube video or playlist url', true); return; }
     $('placeholder').style.display = 'none';
-    setStatus('loading…');
-    if (p.list){
-      player.loadPlaylist({ list: p.list, listType: 'playlist', index: 0, startSeconds: 0 });
-    } else {
-      player.loadVideoById(p.video);
-    }
-    // (re)apply shuffle/repeat once the list exists, then draw the queue
+    setStatus('loading\u2026');
+    if (p.list){ player.loadPlaylist({ list: p.list, listType: 'playlist', index: 0, startSeconds: 0 }); }
+    else { player.loadVideoById(p.video); }
     setTimeout(() => { applyShuffle(); applyRepeat(); renderQueue(); }, 900);
   }
 
   function submit(){
     const val = $('urlInput').value;
     if (!val.trim()) return;
-    if (!apiReady){ pendingInput = val; setStatus('warming up the player…'); return; }
+    if (!apiReady){ pendingInput = val; setStatus('warming up the player\u2026'); return; }
     loadInput(val);
   }
   $('loadBtn').addEventListener('click', submit);
   $('urlInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') submit(); });
 
-  // transport
   $('playBtn').addEventListener('click', () => {
     if (!player || !player.getPlayerState) return;
     const st = player.getPlayerState();
@@ -427,16 +299,13 @@
   });
   $('vol').addEventListener('input', (e) => player && player.setVolume && player.setVolume(parseInt(e.target.value, 10)));
 
-  // shuffle / repeat
   $('shuffleBtn').addEventListener('click', () => {
     shuffleOn = !shuffleOn;
     $('shuffleBtn').classList.toggle('on', shuffleOn);
     applyShuffle();
     setTimeout(renderQueue, 300);
   });
-  function applyShuffle(){
-    if (player && player.setShuffle) { try { player.setShuffle(shuffleOn); } catch(_){} }
-  }
+  function applyShuffle(){ if (player && player.setShuffle){ try { player.setShuffle(shuffleOn); } catch(_){} } }
   $('repeatBtn').addEventListener('click', () => {
     repeatMode = (repeatMode + 1) % 3;
     const btn = $('repeatBtn');
@@ -444,24 +313,19 @@
     btn.classList.toggle('on', repeatMode !== 0);
     applyRepeat();
   });
-  function applyRepeat(){
-    if (player && player.setLoop) { try { player.setLoop(repeatMode === 1); } catch(_){} }
-  }
+  function applyRepeat(){ if (player && player.setLoop){ try { player.setLoop(repeatMode === 1); } catch(_){} } }
 
   function onState(e){
     const playing = e.data === 1;
     $('vinyl').classList.toggle('spin', playing);
     $('turntable').classList.toggle('playing', playing);
-    $('playBtn').textContent = playing ? '❚❚' : '►';
+    $('playBtn').textContent = playing ? '\u275a\u275a' : '\u25ba';
     if (e.data === 1 || e.data === 5) setStatus('');
-
-    // repeat-one: when a track ends, replay it
     if (e.data === 0 && repeatMode === 2 && player){
       const idx = player.getPlaylistIndex ? player.getPlaylistIndex() : -1;
       if (idx >= 0 && player.playVideoAt) player.playVideoAt(idx);
       else { player.seekTo(0, true); player.playVideo(); }
     }
-
     updateTitle();
     renderQueue();
   }
@@ -469,20 +333,16 @@
   function onError(e){
     const map = {
       2:'that link looks malformed',
-      5:'this video can’t play in an embedded player',
-      100:'video not found — it may be private or removed',
+      5:'this video can\u2019t play in an embedded player',
+      100:'video not found \u2014 it may be private or removed',
       101:'the owner disabled embedding for this one',
       150:'the owner disabled embedding for this one',
-      153:'the page didn’t send a referrer — serve this over http(s), not file://'
+      153:'the page didn\u2019t send a referrer \u2014 serve this over http(s), not file://'
     };
     setStatus(map[e.data] || ('youtube error ' + e.data), true);
   }
 
-  function setStatus(msg, isErr){
-    const s = $('status');
-    s.textContent = msg;
-    s.classList.toggle('err', !!isErr);
-  }
+  function setStatus(msg, isErr){ const s = $('status'); s.textContent = msg; s.classList.toggle('err', !!isErr); }
 
   function updateTitle(){
     if (!player || !player.getVideoData) return;
@@ -499,23 +359,16 @@
     }
   }
 
-  // ---------- up next queue ----------
   function renderQueue(){
     const wrap = $('queue');
-    if (!player || !player.getPlaylist){ return; }
+    if (!player || !player.getPlaylist) return;
     const ids = player.getPlaylist() || [];
     const idx = player.getPlaylistIndex ? player.getPlaylistIndex() : -1;
-
     if (!ids.length){
-      // single video (no playlist)
       const d = player.getVideoData ? player.getVideoData() : null;
-      if (d && d.title){
-        wrap.innerHTML = '';
-        wrap.appendChild(makeRow(0, d.title, true, false));
-      }
+      if (d && d.title){ wrap.innerHTML = ''; wrap.appendChild(makeRow(0, d.title, true, false)); }
       return;
     }
-
     wrap.innerHTML = '';
     ids.forEach((id, i) => {
       const name = titleCache[id] || ('Track ' + (i + 1));
@@ -530,17 +383,12 @@
   function makeRow(i, name, isCurrent, isPlayed){
     const row = document.createElement('button');
     row.className = 'qrow' + (isCurrent ? ' current' : '') + (isPlayed ? ' played' : '');
-    const num = document.createElement('span');
-    num.className = 'num';
-    num.textContent = isCurrent ? '♪' : (i + 1);
-    const nm = document.createElement('span');
-    nm.className = 'name';
-    nm.textContent = name;
+    const num = document.createElement('span'); num.className = 'num'; num.textContent = isCurrent ? '\u266a' : (i + 1);
+    const nm = document.createElement('span'); nm.className = 'name'; nm.textContent = name;
     row.appendChild(num); row.appendChild(nm);
     return row;
   }
 
-  // ---------- seek (draggable star) ----------
   const seek = $('seek');
   function seekFromClientX(clientX){
     if (!player || !player.getDuration) return;
@@ -581,7 +429,6 @@
     seek.setAttribute('aria-valuenow', Math.floor(cur||0));
   }
 
-  // ---------- poll loop ----------
   setInterval(() => {
     if (!player || !player.getDuration) return;
     updateTitle();
